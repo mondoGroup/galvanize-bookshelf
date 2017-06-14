@@ -7,4 +7,6 @@ const router = express.Router();
 
 // YOUR CODE HERE
 
+router.get()
+
 module.exports = router;
