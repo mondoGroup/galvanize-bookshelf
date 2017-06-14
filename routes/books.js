@@ -46,30 +46,44 @@ router.post('/books', (req, res) => {
   let promiseFromQuery = books.addBook(book);
   promiseFromQuery
     .then(book => {
-      console.log(book);
       var camelized = humps.camelizeKeys(book);
       res.send(camelized[0]);
     })
     .catch(err => {
-      res.status(500).send(err);
+      res.sendStatus(500);
     });
 });
 
+router.patch('/books/:id', (req, res) => {
+  let books = new Books();
+  let book = req.body;
+  let id = req.params.id;
+
+  let promiseFromQuery = books.updateBook(id, book);
+
+  promiseFromQuery
+    .then((book) => {
+      var camelized = humps.camelizeKeys(book);
+      res.send(camelized[0])
+
+    })
+})
+
 router.delete('/books/:id', (req, res) => {
   let books = new Books();
-  var book = req.body;
-  let id = req.params.id
+  let id = req.params.id;
 
   let promiseFromQuery = books.deleteBook(id);
 
   promiseFromQuery
-  .then((book) => {
-    delete book.id;
-    res.json(book);
+    .then((book) => {
+      var camelized = humps.camelizeKeys(book[0]);
+      delete camelized.id;
+      res.send(camelized);
   })
-  .catch(err => {
-    res.status(500).send(err);
+    .catch(err => {
+      res.status(500).send(err);
   });
-})
+});
 
 module.exports = router;

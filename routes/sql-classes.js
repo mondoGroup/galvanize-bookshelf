@@ -20,20 +20,15 @@ class Books {
   }
 
   addBook(book) {
+    book = humps.decamelizeKeys(book);
     let promiseFromQuery = knex('books')
-      .insert({
-        title: book.title,
-        author: book.author,
-        genre: book.genre,
-        description: book.description,
-        cover_url: book.coverUrl
-      });
+      .insert(book,'*');
 
     return promiseFromQuery;
-
   }
 
   updateBook(id, book) {
+    book = humps.decamelizeKeys(book);
     let promiseFromQuery = knex('books')
       .where('id', id)
       .update({
@@ -48,12 +43,12 @@ class Books {
 
   deleteBook(id) {
     let promiseFromQuery = knex('books')
+      .del()
       .where('id', id)
-      .del();
+      .returning('*');
 
     return promiseFromQuery;
   }
-
 
 }
 
