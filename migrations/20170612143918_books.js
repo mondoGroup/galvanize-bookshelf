@@ -10,6 +10,7 @@ exports.up = function(knex, Promise) {
     table.text('description').notNullable().defaultTo('');
     table.text('cover_url').notNullable().defaultTo('');
     table.timestamps(true, true);
+    table.unique('id');
   })
 };
 

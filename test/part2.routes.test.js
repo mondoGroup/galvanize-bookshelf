@@ -169,7 +169,7 @@ suite('part2 routes', addDatabaseHooks(() => {
       /* eslint-enable max-len */
   });
 
-  test('DELETE /books/:id', (done) => {
+  test.only('DELETE /books/:id', (done) => {
     /* eslint-disable max-len */
     request(server)
       .del('/books/1')
