@@ -7,8 +7,6 @@ const knex = require('../knex.js');
 const humps = require('humps');
 const jwt = require('jsonwebtoken');
 
-
-
 // YOUR CODE HERE
 
 router.post('/users', (req, res, next) => {

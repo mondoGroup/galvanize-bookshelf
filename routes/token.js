@@ -4,7 +4,6 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 
-
 // eslint-disable-next-line new-cap
 const router = express.Router();
 const Users = require('../controllers/userLookup');
