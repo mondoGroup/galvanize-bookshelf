@@ -4,7 +4,7 @@ const express = require('express');
 const knex = require('../knex.js');
 const humps = require('humps');
 
-const Books = require('./sql-classes.js')
+const Books = require('../controllers/sql-classes.js')
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
