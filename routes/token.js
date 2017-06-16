@@ -11,10 +11,16 @@ const Users = require('../controllers/userLookup');
 const users = new Users();
 const humps = require('humps');
 
+router.get('/token', (req, res) => {
+	if (!req.cookies.token) {
+		res.send(false);
+	} else {
+		res.send(true);
+	}
+})
 
-// router.get() {}
-
-router.post('/token', checkUser, (req, res)=>{
+router.post('/token', checkUser, tryUserLogin, (req, res) => {
+	let userIncoming = req.body;
 	let user=req.user;
 	user = humps.camelizeKeys(user);
 
@@ -41,38 +47,41 @@ router.post('/token', checkUser, (req, res)=>{
 	  res.cookie('token', token, {httpOnly: true}).send(userObj);
 })
 
-// router.delete() {}
+router.delete('/token',(req, res) => {
+	res.cookie('token','').send(true);
+})
 
 function checkUser(req,res,next){
 	const {email, password} = req.body;
 	users.getUserName(email)
 	.then(user => {
 		if(!user){
-		res.status(404).send('User doesn\'t exist');
+			res.set('Content-Type','text/plain');
+			res.status(400).send('Bad email or password');
 	} else{
 		req.user=user;
 		next();
 	}
 	})
 	.catch(err => {
+		console.log('this',err);
 	})
 }
 
-
-// function tryUserLogin(req, res, next){
-// 	const { email, password } = req.body;
-//
-// 	  users.tryLoginUser(email, password)
-// 	    .then(loggedIn => {
-// 	      if (!loggedIn) {
-// 	        res.send('Incorrect Password');
-// 	      } else {
-// 	        next();
-// 	      }
-// 	    })
-// 	    .catch(err => {
-// 	      console.log(err);
-// 	    });
-// }
+function tryUserLogin(req, res, next){
+	const { email, password } = req.body;
+	  users.tryLoginUser(email, password)
+	    .then(loggedIn => {
+	      if (!loggedIn) {
+					res.set('Content-Type','text/plain')
+					res.status(400).send('Bad email or password')
+	      } else {
+	        next();
+	      }
+	    })
+	    .catch(err => {
+	      console.log(err);
+	    });
+}
 
 module.exports = router;

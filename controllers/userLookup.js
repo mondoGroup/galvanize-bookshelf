@@ -13,11 +13,11 @@ class Users {
 	}
 
 	tryLoginUser(email, password){
-		return knex('users').select('password').first().where({email})
+		return knex('users').select('hashed_password').first().where({email})
 		.then(queryResult => {
 			let hashed = queryResult.hashed_password;
-			return bcrypt.compare(password, hashed_password);
-	})
+			return bcrypt.compare(password, hashed);
+		})
 	}
 }
 module.exports = Users;
