@@ -20,7 +20,7 @@ router.get('/token', (req, res) => {
 })
 
 router.post('/token', checkUser, tryUserLogin, (req, res) => {
-	let userIncoming = req.body;
+	// let userIncoming = req.body;
 	let user=req.user;
 	user = humps.camelizeKeys(user);
 
@@ -53,23 +53,35 @@ router.delete('/token',(req, res) => {
 
 function checkUser(req,res,next){
 	const {email, password} = req.body;
+
+	if(!email) {
+		res.set('Content-Type','text/plain');
+		return res.status(400).send('Email must not be blank');
+	}
+
 	users.getUserName(email)
 	.then(user => {
 		if(!user){
 			res.set('Content-Type','text/plain');
-			res.status(400).send('Bad email or password');
+			return res.status(400).send('Bad email or password');
 	} else{
 		req.user=user;
 		next();
 	}
 	})
 	.catch(err => {
-		console.log('this',err);
+		res.status(500).send(err);
 	})
 }
 
 function tryUserLogin(req, res, next){
 	const { email, password } = req.body;
+
+	if(!password) {
+		res.set('Content-Type','text/plain');
+		return res.status(400).send('Password must not be blank');
+	}
+
 	  users.tryLoginUser(email, password)
 	    .then(loggedIn => {
 	      if (!loggedIn) {
@@ -80,7 +92,7 @@ function tryUserLogin(req, res, next){
 	      }
 	    })
 	    .catch(err => {
-	      console.log(err);
+				res.status(500).send(err);
 	    });
 }
 
