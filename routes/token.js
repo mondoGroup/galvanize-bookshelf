@@ -19,7 +19,6 @@ router.get('/token', (req, res) => {
 })
 
 router.post('/token', checkUser, tryUserLogin, (req, res) => {
-	// let userIncoming = req.body;
 	let user=req.user;
 	user = humps.camelizeKeys(user);
 

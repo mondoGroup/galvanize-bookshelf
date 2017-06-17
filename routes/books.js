@@ -4,7 +4,7 @@ const express = require('express');
 const knex = require('../knex.js');
 const humps = require('humps');
 
-const Books = require('../controllers/sql-classes.js')
+const Books = require('../controllers/booksLookup.js')
 
 // eslint-disable-next-line new-cap
 const router = express.Router();
@@ -59,41 +59,46 @@ router.post('/books', (req, res) => {
     return;
   }
 
-  if (!book.author) {
+  else if (!book.author) {
     res.set('Content-Type','text/plain');
     res.status(400).send('Author must not be blank');
     return;
   }
 
-  if (!book.genre) {
+  else if (!book.genre) {
     res.set('Content-Type','text/plain');
     res.status(400).send('Genre must not be blank');
     return;
   }
 
-  if (!book.description) {
+  else if (!book.description) {
     res.set('Content-Type','text/plain');
     res.status(400).send('Description must not be blank');
     return;
   }
 
-  if (!book.coverUrl) {
+  else if (!book.coverUrl) {
     res.set('Content-Type','text/plain');
     res.status(400).send('Cover URL must not be blank');
     return;
   }
 
-  let promiseFromQuery = books.addBook(book);
+  else {
 
-  promiseFromQuery
+    let promiseFromQuery = books.addBook(book);
+
+    promiseFromQuery
     .then(book => {
       var camelized = humps.camelizeKeys(book);
       res.setHeader('Content-Type', 'application/json')
       return res.send(camelized[0]);
     })
-  .catch(err => {
-    res.sendStatus(500);
-  });
+    .catch(err => {
+      res.sendStatus(500);
+    });
+
+  }
+
 });
 
 router.patch('/books/:id', (req, res) => {

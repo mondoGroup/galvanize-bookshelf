@@ -2,8 +2,6 @@ const knex = require('../knex.js');
 const humps = require('humps');
 
 class Books {
-  constructor() {
-  }
 
   queryAllBooks() {
     let promiseFromQuery = knex('books')

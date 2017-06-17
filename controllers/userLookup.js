@@ -4,9 +4,6 @@ const bcrypt = require('bcrypt');
 
 
 class Users {
-	constructor(){
-
-	}
 
 	getUserName(email){
 		return knex('users').first().where('email', email)
