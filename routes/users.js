@@ -30,12 +30,16 @@ router.post('/users', (req, res, next) => {
         return res.status(400).send('Email already exists')
       }
     })
+    .catch(err => {
+      res.status(500).send(err);
+    });
 
-  bcrypt.hash(user.password, 9).then(function(hashed_password) {
 
-    user.hashed_password = hashed_password;
+    bcrypt.hash(user.password, 9).then(function(hashed_password) {
 
-    return knex('users')
+      user.hashed_password = hashed_password;
+
+      return knex('users')
       .insert({
         first_name: user.firstName,
         last_name: user.lastName,
@@ -46,19 +50,20 @@ router.post('/users', (req, res, next) => {
     .then((user) => {
       user = humps.camelizeKeys(user);
       const jwtPayload = {
-    	    iss: 'jwt_lesson_app',
-    	    sub: {
-    	      email: user.email,
-    	      id: user.id
-    	    },
-    	    exp: Math.floor(Date.now() / 1000) + (60 * 60),
-    	    loggedIn: true
-    	  };
+          iss: 'jwt_lesson_app',
+          sub: {
+            email: user.email,
+            id: user.id
+          },
+          exp: Math.floor(Date.now() / 1000) + (60 * 60),
+          loggedIn: true
+        };
 
-    	  const secret = process.env.JWT_KEY;
-    	  const token = jwt.sign(jwtPayload, secret);
+        const secret = process.env.JWT_KEY;
+        const token = jwt.sign(jwtPayload, secret);
 
-    	  res.cookie('token', token, {httpOnly: true}).send(user[0]);
+        res.cookie('token', token, {httpOnly: true}).send(user[0]);
+      // res.send(user[0]);
     })
     .catch((err) => {
       next(err);
